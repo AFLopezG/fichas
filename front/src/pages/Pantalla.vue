@@ -23,6 +23,9 @@
     <script>
     import { io } from 'socket.io-client'
     const socket = io(import.meta.env.VITE_API_SOCKET)
+
+// Import other required libraries
+    // Creates a client
     export default {
         name: 'pantallaPage',
         data() {
@@ -31,10 +34,12 @@
                 lista: ['','','','','','','',''],
                 //socket : io('http://192.168.154.208:3000'),
                 socket : io('http://localhost:3000'),
+                optionsVoice: [],
             }
         },
     mounted() {
       if (this.$store.boolSocket !== true) {
+        
         socket.on('connect', () => {
           console.log('conectado')
         })
@@ -46,6 +51,7 @@
           if(this.lista.includes(data))
             this.lista.splice(this.lista.indexOf(data),1)
           this.lista.unshift(data)
+            this.speak(data)
         })
         this.$store.boolSocket = true
       }
@@ -102,10 +108,45 @@
             //     }
             // });
         },
+        created(){
+       // this.setVoices()
+            
+        },
         computed: {
 
         },
         methods: {
+            setVoices () {
+                let id = setInterval(() => {
+                if (this.optionsVoice.length === 0) {
+                    this.voicesList()
+                    console.log(this.optionsVoice)
+                } else {
+                    clearInterval(id)
+                  }
+                }, 50)
+                console.log(id)
+                },
+                voicesList () {
+                let teste = window.speechSynthesis
+                this.optionsVoice = teste.getVoices().map(voice => ({
+                    label: voice.name, value: voice.lang
+                }))
+            },
+            async speak(cadena) {
+                const synth = window.speechSynthesis;
+                const voices = synth.getVoices();
+
+                    //console.log(voices)
+                    var msg = new SpeechSynthesisUtterance('Ticket '+cadena);
+                    msg.rate = 0.6;
+                    msg.pitch = 1;
+                    msg.volume = 1;
+                    msg.lang = 'es-ES'
+                    //window.speechSynthesis.speak(msg);
+                    msg.voice = voices[0];
+                    synth.speak(msg);
+            },
             aumentar(){
                 // var
                 this.socket.emit('chat message', 'aaa');

@@ -144,6 +144,7 @@ class UserController extends Controller
     public function datosatender(Request $request){
         return Ticket::where('empleado','=',$request->nombrecaja)
             ->whereDate('updated_at','=',date('Y-m-d'))
+            ->orderBy('id','desc')
             ->get();
     }
  }

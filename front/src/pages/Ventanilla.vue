@@ -25,6 +25,7 @@
           <q-table
             title="Lista de fichas Atendidas"
             :rows="tickets"
+            :columns="columna"
             row-key="name"
           />
         </q-page>
@@ -37,11 +38,18 @@
 <script>
 import {globalStore} from '../stores/globalStore'
 import { io } from 'socket.io-client'
+import moment from 'moment'
 const socket = io(import.meta.env.VITE_API_SOCKET)
 
 export default {
     name: 'VentanillaPage',
     data: () => ({
+        columna: [
+          {label:'CAJA',field:'empleado',name:'empleado'},
+          {label:'NUMERO',field:'numero',name:'numero'},
+          {label:'ESTADO',field:'estado',name:'estado'},
+          {label:'FECHA',field: row=>moment(row.updated_at).format('DD/MM/YYYY h:mm:ss'),name:'FECHA'},
+        ],
         dialog: true,
         drawer: null,
         units:[],
@@ -53,11 +61,14 @@ export default {
         store:globalStore()
 
     }),
+    created(){
+      this.datosatender()
 
+    },
     mounted() {
 
-      this.datosatender()
       if (this.$store.boolSocket !== true) {
+      this.datosatender()
         socket.on('connect', () => {
           console.log('conectado')
         })
@@ -92,7 +103,7 @@ export default {
                     this.$api.post('/ultificha',{unit_id:this.store.user.unit_id})
                         .then(res=>{
                             console.log(res);
-                            this.socket.emit('atender', res.data.numero+'->'+res.data.empleado);
+                            this.socket.emit('atender', res.data.numero+' -> '+res.data.empleado);
                             //socket.emit('atender', res.data.numero+'->'+res.data.empleado);
                             //socket.on('disconnect', () => {
                            ///     console.log('desconectado')
@@ -108,7 +119,7 @@ export default {
           this.$api.post('/ultificha',{unit_id:this.store.user.unit_id})
                         .then(res=>{
                             console.log(res);
-                            this.socket.emit('atender', res.data.numero+'->'+res.data.empleado);
+                            this.socket.emit('atender', res.data.numero+' -> '+res.data.empleado);
                         });
         }
     },
