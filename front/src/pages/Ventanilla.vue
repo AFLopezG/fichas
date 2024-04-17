@@ -18,7 +18,15 @@
       </q-footer>
       <q-page-container>
         <q-page class="q-pa-md">
-            <q-btn @click="atender()" color="primary">Atender</q-btn>
+           <div class="row">
+            <div class="col-6"><q-btn @click="repetir()" color="yellow-7" size="xl" icon="restart_alt">Repetir</q-btn></div>
+            <div class="col-6"><q-btn @click="atender()" color="green-7" size="xl" icon="navigate_next">Atender</q-btn></div>
+           </div>
+          <q-table
+            title="Lista de fichas Atendidas"
+            :rows="tickets"
+            row-key="name"
+          />
         </q-page>
      </q-page-container>
     </q-layout>
@@ -48,6 +56,7 @@ export default {
 
     mounted() {
 
+      this.datosatender()
       if (this.$store.boolSocket !== true) {
         socket.on('connect', () => {
           console.log('conectado')
@@ -74,14 +83,13 @@ export default {
         },
 
         atender(){
-
             this.$api.post('/atender',{nombrecaja:this.store.user.caja,unit_id:this.store.user.unit_id})
                 .then(res=>{
                     // this.tickets=res.data
                     console.log('atender',res.data)
-                  socket.emit('atender', res.data.numero+'->'+res.data.empleado);
+                  //socket.emit('atender', res.data.numero+'->'+res.data.empleado);
                     this.datosatender()
-                    this.$post.post('/ultificha',{unit_id:this.store.user.unit_id})
+                    this.$api.post('/ultificha',{unit_id:this.store.user.unit_id})
                         .then(res=>{
                             console.log(res);
                             this.socket.emit('atender', res.data.numero+'->'+res.data.empleado);
@@ -96,6 +104,13 @@ export default {
 
                 });
         },
+        repetir(){
+          this.$api.post('/ultificha',{unit_id:this.store.user.unit_id})
+                        .then(res=>{
+                            console.log(res);
+                            this.socket.emit('atender', res.data.numero+'->'+res.data.empleado);
+                        });
+        }
     },
 
 }

@@ -8,11 +8,11 @@
     <!--                <button @click="aumentar" style="background: red">lorem*10</button>-->
             </center>
             </div>
-            <div style="height: 30vh;border: 1px solid #c68400;background: #ffe54c">
+            <div style="height: 30vh;border: 1px solid #c68400;background: #ffe54c" >
                 <div class="grid" id="fichas" >
-                                        <div  class="col" style="display: flex;align-items: center;text-align: center">
+                                        <div  class="col1" style="display: flex;align-items: center;text-align: center" v-for="(item, i) in lista" :key="i">
                                             <p style="  font-size:3em;font-weight:bold;text-align: center;width: 100%" >
-
+                                                {{ item }}
                                             </p>
                                         </div>
                 </div>
@@ -28,7 +28,7 @@
         data() {
             return {
                 video: 1,
-                array: ['','','','','','','',''],
+                lista: ['','','','','','','',''],
                 //socket : io('http://192.168.154.208:3000'),
                 socket : io('http://localhost:3000'),
             }
@@ -43,6 +43,9 @@
         })
         socket.on('atender', (data) => {
           console.log(data)
+          if(this.lista.includes(data))
+            this.lista.splice(this.lista.indexOf(data),1)
+          this.lista.unshift(data)
         })
         this.$store.boolSocket = true
       }
@@ -84,7 +87,7 @@
             // this.aumentar('aa');
             // this.array.pop();
             // this.array.unshift('aa');
-            var array= ['','','','','','','',''];
+            //var list= ['','','','','','','',''];
             // this.socket.on('atender', function(msg){
             //     array.pop();
             //     array.unshift(msg);
@@ -139,7 +142,7 @@
         padding: 5px;
         gap: 1px;
     }
-    .col {
+    .col1 {
         float: left;
         width: 25%;
         height: 50%;

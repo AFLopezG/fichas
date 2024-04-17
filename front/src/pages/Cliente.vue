@@ -52,7 +52,7 @@
 
 <script>
 import moment from 'moment'
-
+import { QSpinnerGears } from 'quasar'
     export default {
         name: 'ClientePage',
         data: () => ({
@@ -86,6 +86,12 @@ import moment from 'moment'
                 moment.locale('es');
                 this.$api.post('/registrar',{unit_id:item.id}).then(async res=>{
                     console.log(res.data);
+                    this.$q.notify({
+                        spinner: QSpinnerGears,
+                        message: 'Imprimiendo...',
+                        position: 'top',
+                        timeout: 2000
+                        })
                     let myWindow = await window.open('', 'myWindow', 'width=200,height=100');
                     myWindow.document.write('<style>*{padding:0px;border:0px;margin:0px;}</style><div style="text-align:center;padding-left: 25px;padding-right: 25px;">' +
                         '<div style="border: 1px solid black">' +
