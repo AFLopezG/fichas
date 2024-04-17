@@ -27,8 +27,10 @@
 </template>
 
 <script>
-    import {io} from 'socket.io-client'
 import {globalStore} from '../stores/globalStore'
+import { io } from 'socket.io-client'
+const socket = io(import.meta.env.VITE_API_SOCKET)
+
 export default {
     name: 'VentanillaPage',
     data: () => ({
@@ -45,6 +47,20 @@ export default {
     }),
 
     mounted() {
+
+      if (this.$store.boolSocket !== true) {
+        socket.on('connect', () => {
+          console.log('conectado')
+        })
+        socket.on('disconnect', () => {
+          console.log('desconectado')
+        })
+        // socket.on('atender', (data) => {
+        //   console.log(data)
+        // })
+        this.$store.boolSocket = true
+      }
+
         if (!this.store.isLoggedIn) {
             this.$router.push('/login')
         }
@@ -63,6 +79,7 @@ export default {
                 .then(res=>{
                     // this.tickets=res.data
                     console.log('atender',res.data)
+                  socket.emit('atender', res.data.numero+'->'+res.data.empleado);
                     this.datosatender()
                     this.$post.post('/ultificha',{unit_id:this.store.user.unit_id})
                         .then(res=>{

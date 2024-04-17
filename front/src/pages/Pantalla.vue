@@ -12,16 +12,17 @@
                 <div class="grid" id="fichas" >
                                         <div  class="col" style="display: flex;align-items: center;text-align: center">
                                             <p style="  font-size:3em;font-weight:bold;text-align: center;width: 100%" >
-    
+
                                             </p>
                                         </div>
                 </div>
             </div>
         </div>
     </template>
-    
+
     <script>
-    import {io} from 'socket.io-client'
+    import { io } from 'socket.io-client'
+    const socket = io(import.meta.env.VITE_API_SOCKET)
     export default {
         name: 'pantallaPage',
         data() {
@@ -32,8 +33,20 @@
                 socket : io('http://localhost:3000'),
             }
         },
-    mounted() {  
-      
+    mounted() {
+      if (this.$store.boolSocket !== true) {
+        socket.on('connect', () => {
+          console.log('conectado')
+        })
+        socket.on('disconnect', () => {
+          console.log('desconectado')
+        })
+        socket.on('atender', (data) => {
+          console.log(data)
+        })
+        this.$store.boolSocket = true
+      }
+
       /*
           if (data.detailArray === undefined) {
             this.$q.notify({
@@ -62,32 +75,32 @@
                 newVideo.load();
             }, false);
             newVideo.play();
-    
+
             // var socket = io();
-    
+
             // var socket = io();
-    
+
             // console.log('this is current player instance object', this.player)
             // this.aumentar('aa');
             // this.array.pop();
             // this.array.unshift('aa');
             var array= ['','','','','','','',''];
-            this.socket.on('atender', function(msg){
-                array.pop();
-                array.unshift(msg);
-                 console.log(msg);
-                $('#fichas').html('');
-                for (let i=0;i<8;i++){
-                    $('#fichas').append('<div  class="col" style="display: flex;align-items: center;text-align: center">' +
-                        '                    <p style="  font-size:3em;font-weight:bold;text-align: center;width: 100%" >' +
-                        array[i] +
-                        '                    </p>' +
-                        '                </div>');
-                }
-            });
+            // this.socket.on('atender', function(msg){
+            //     array.pop();
+            //     array.unshift(msg);
+            //      console.log(msg);
+            //     $('#fichas').html('');
+            //     for (let i=0;i<8;i++){
+            //         $('#fichas').append('<div  class="col" style="display: flex;align-items: center;text-align: center">' +
+            //             '                    <p style="  font-size:3em;font-weight:bold;text-align: center;width: 100%" >' +
+            //             array[i] +
+            //             '                    </p>' +
+            //             '                </div>');
+            //     }
+            // });
         },
         computed: {
- 
+
         },
         methods: {
             aumentar(){
@@ -135,4 +148,3 @@
         border-radius: 1em;
     }
     </style>
-    

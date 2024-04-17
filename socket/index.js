@@ -1,17 +1,23 @@
-var app = require('express')();
-var http = require('http').createServer(app);
-var io = require('socket.io')(http);
-
+const express = require('express');
+const app = express();
+require("dotenv").config();
+const httpServer = require("http").createServer(app);
+const io = require("socket.io")(httpServer, {
+    cors: {
+        origin: "*",
+    },
+});
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
-
-io.on('connection', (socket) => {
+io.on("connection", (socket) => {
     socket.on('atender', (msg) => {
         io.emit('atender', msg);
     });
 });
 
-http.listen(3000, () => {
-    console.log('listening on *:3000');
-});
+const PORT = process.env.PORT || 3000;
+
+httpServer.listen(PORT, () =>
+    console.log(`server listening at http://localhost:${PORT}`)
+);
