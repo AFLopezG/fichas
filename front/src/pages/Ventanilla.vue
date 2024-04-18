@@ -1,21 +1,9 @@
 <template>
   <div class="q-pa-xs">
     <q-layout  class="shadow-2 rounded-borders">
-      <q-header elevated>
-        <q-toolbar>
-            <img src="img/gamo.png" width="100px">
 
-          <q-toolbar-title>FICHA DE ATENCION</q-toolbar-title>
 
-          <q-btn flat round dense icon="whatshot" />
-        </q-toolbar>
-      </q-header>
 
-      <q-footer elevated>
-        <q-toolbar>
-          <q-toolbar-title>&copy; {{ new Date().getFullYear() }}</q-toolbar-title>
-        </q-toolbar>
-      </q-footer>
       <q-page-container>
         <q-page class="q-pa-md">
            <div class="row">

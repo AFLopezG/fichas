@@ -109,6 +109,10 @@ import {globalStore} from 'stores/globalStore'
           this.$router.push('/ventanilla')
           this.store.user = res.data.user
           this.store.isLoggedIn = true
+		  res.data.user.permisos.forEach(r => {
+				if(r.id==1) this.store.booluser=true
+				if(r.id==2) this.store.boolcaja=true
+		  });
           this.$api.defaults.headers.common.Authorization = 'Bearer ' + res.data.token
           localStorage.setItem('tokenTicket', res.data.token)
         }).catch(error => {

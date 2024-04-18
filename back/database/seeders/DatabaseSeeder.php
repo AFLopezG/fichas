@@ -21,5 +21,6 @@ class DatabaseSeeder extends Seeder
         $this->call(UnitSeeder::class);
         $this->call(EmpleadoSeeder::class);
         $this->call(UserSeeder::class);
+        $this->call(PermisoSeeder::class);
     }
 }

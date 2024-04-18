@@ -5,6 +5,8 @@ export const globalStore = defineStore('global', {
     counter: 0,
     user: {},
     isLoggedIn: !!localStorage.getItem('tokenTicket'),
+    booluser: false,
+    boolcaja: false,
     boolSocket: false,
     }),
   getters: {

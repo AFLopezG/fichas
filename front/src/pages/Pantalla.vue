@@ -139,7 +139,7 @@
 
                     //console.log(voices)
                     var msg = new SpeechSynthesisUtterance('Ticket '+cadena);
-                    msg.rate = 0.6;
+                    msg.rate = 0.5;
                     msg.pitch = 1;
                     msg.volume = 1;
                     msg.lang = 'es-ES'

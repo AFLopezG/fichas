@@ -27,6 +27,10 @@ app.config.globalProperties.$store=globalStore()
       console.log(response.data)
       globalStore().user = response.data
       globalStore().isLoggedIn = true
+      response.data.permisos.forEach((r: { id: number; }) => {
+          if(r.id==1) globalStore().booluser=true
+          if(r.id==2) globalStore().boolcaja=true
+      });
       
     }).catch(() => {
       app.config.globalProperties.$api.defaults.headers.common['Authorization']=''

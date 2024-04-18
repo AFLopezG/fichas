@@ -25,6 +25,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('user', App\Http\Controllers\UserController::class);
     Route::put('/updatePassword/{user}',[\App\Http\Controllers\UserController::class,'updatePassword']);
     Route::post('/cambioEstado/{id}',[\App\Http\Controllers\UserController::class,'cambioEstado']);
+    Route::apiResource('permiso', App\Http\Controllers\PermisoController::class);
+    Route::put('/updatepermisos/{user}',[\App\Http\Controllers\UserController::class,'updatepermisos']);
+    Route::put('/updatecajero/{user}',[\App\Http\Controllers\UserController::class,'updatecajero']);
    
     Route::post('/atender',[\App\Http\Controllers\UserController::class,'atender']);
     Route::post('/datosatender',[\App\Http\Controllers\UserController::class,'datosatender']);

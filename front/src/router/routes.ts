@@ -1,15 +1,21 @@
+import { RouteRecordRaw } from 'vue-router'
 import MainLayout from 'layouts/MainLayout.vue'
 import IndexPage from 'pages/IndexPage.vue'
 import Login from 'pages/Login.vue'
 import Cliente from 'pages/Cliente.vue'
 import Pantalla from 'pages/Pantalla.vue'
 import Ventanilla from 'pages/Ventanilla.vue'
+import Usuarios from 'pages/Usuarios.vue'
 
-const routes = [
+const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: MainLayout,
-    children: [{ path: '', component: IndexPage.vue }],
+    children: [
+      { path: '', component: IndexPage , meta:{ requiresAuth: true } },
+      { path: '/usuarios', component: Usuarios, meta: { requiresAuth: true } },
+      { path: '/ventanilla', component: Ventanilla, meta: { requiresAuth: true } },
+    ],
   },
   {
     path: '/login',
@@ -23,10 +29,7 @@ const routes = [
     path: '/pantalla',
     component: Pantalla
   },
-  {
-    path: '/ventanilla',
-    component: Ventanilla, meta: { requiresAuth: true }
-  },
+
   // Always leave this as last one,
   // but you can also remove it
   {

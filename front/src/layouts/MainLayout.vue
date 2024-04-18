@@ -8,14 +8,29 @@
           round
           icon="menu"
           aria-label="Menu"
-          @click="toggleLeftDrawer"
+          @click="leftDrawerOpen=!leftDrawerOpen"
         />
 
         <q-toolbar-title>
-          Quasar App
+          <div class="row">
+            <div class="">            <img             src="img/gamo.png"            style="height: 40px; width: 100px;"      /></div>
+            <div class=""><div style="font-size:18px">{{  store.user.name}}
+            </div></div>
+
+       
+   
+          </div>
+          
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <div>{{ store.user.caja }}           <q-btn
+            flat
+            dense
+            round
+            icon="logout"
+            aria-label="Logout"
+            @click="logout"
+          /></div>
       </q-toolbar>
     </q-header>
 
@@ -23,94 +38,77 @@
       v-model="leftDrawerOpen"
       show-if-above
       bordered
+      :width="250"
     >
-      <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
+    <q-list bordered class="rounded-borders">
+        <q-item-label header class="text-center text-bold bg-red-8 text-white">
+          Opciones
         </q-item-label>
-
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
+        
+        <q-item clickable dense to="/" exact active-class="bg-primary text-white">
+          <q-item-section avatar><q-icon name="home" /></q-item-section>
+          <q-item-section><q-item-label>Principal</q-item-label><q-item-label caption class="text-grey-2"></q-item-label></q-item-section>
+      </q-item>
+      <q-expansion-item  active-class="bg-primary text-white" dense exact expand-separator icon="people" label="Usuarios" to="/usuarios" expand-icon="null" v-if="store.booluser"/> 
+        <q-expansion-item  active-class="bg-primary text-white" dense exact expand-separator icon="route" label="Buscar Tramite" to="/seguimiento" expand-icon="null" v-if="store.boolseg"/> 
+        <q-expansion-item  active-class="bg-primary text-white" dense exact expand-separator icon="summarize" label="Reporte Dia" to="/reporte" expand-icon="null" /> 
       </q-list>
     </q-drawer>
 
     <q-page-container>
       <router-view />
     </q-page-container>
+    <q-footer elevated>
+        <q-toolbar>
+          <q-toolbar-title>&copy; {{ new Date().getFullYear() }}</q-toolbar-title>
+        </q-toolbar>
+      </q-footer>
   </q-layout>
 </template>
 
-<script lang="ts">
+<script >
 import { defineComponent, ref } from 'vue';
-import EssentialLink from 'components/EssentialLink.vue';
+import { globalStore } from '../stores/globalStore'
 
-const linksList = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-];
 
 export default defineComponent({
   name: 'MainLayout',
-
-  components: {
-    EssentialLink
-  },
-
-  setup () {
-    const leftDrawerOpen = ref(false)
-
+  data () {
     return {
-      essentialLinks: linksList,
-      leftDrawerOpen,
-      toggleLeftDrawer () {
-        leftDrawerOpen.value = !leftDrawerOpen.value
-      }
+      leftDrawerOpen: ref(false),
+      store: globalStore()
     }
-  }
+  },
+  created () {
+    if(!this.store.isLoggedIn)
+    this.$router.push('/login')
+
+  },
+  methods: {
+    logout () {
+      this.$q.dialog({
+        title: 'Cerrar sesión',
+        message: '¿Está seguro que desea cerrar sesión?',
+        cancel: true,
+        persistent: true
+      }).onOk(() => {
+        this.$q.loading.show()
+        this.$api.post('logout').then(() => {
+          globalStore().user = {}
+          localStorage.removeItem('tokenMulti')
+          globalStore().isLoggedIn = false
+          this.$router.push('/login')
+          this.$q.loading.hide()
+          globalStore().isLoggedIn = false
+          globalStore().booluser = false
+        })
+      })
+    },
+
+    toggleLeftDrawer () {
+      this.leftDrawerOpen = !this.leftDrawerOpen
+    }
+  },
+  
 });
 </script>
